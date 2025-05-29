@@ -4,7 +4,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 ## Prerequisites
 
 ### Android Studio Setup
-1. [**Install Android Studio**]:https://developer.android.com/studio
+1. [**Install Android Studio**]:(https://developer.android.com/studio)
 2. **Add Environment variables**
    1. Hit Win > Search "Edit the system environment variables" 
    2. Below the "User variables for (User)" window, press the "New..." button
