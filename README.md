@@ -1,6 +1,18 @@
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Prerequisites
+
+### Android Studio Setup
+1. [**Install Android Studio**]:https://developer.android.com/studio
+2. **Add Environment variables**
+   1. Hit Win > Search "Edit the system environment variables" 
+   2. Below the "User variables for (User)" window, press the "New..." button
+      1. Variable name: ANDROID_HOME
+      2. Variable value: (Unlessed specified otherwise: C:\Users\(User)\AppData\Local\Android\Sdk)
+   3. Within the "User variables for (User)" window, click on Path varable and then press the "Edit..." button under the window
+      1. On the "Edit environment variable" popup, press "New"
+      2. Add link to Android Studio's platform tools (Unless specified otherwise: C:\Users\mcar7\AppData\Local\Android\Sdk\platform-tools)
 
 ## Get started
 
@@ -15,7 +27,6 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```bash
    npx expo start
    ```
-
 In the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
