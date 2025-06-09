@@ -1,33 +1,41 @@
-import { globalStyles } from '@/styles/globalStyles';
 import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
-import { Text, View } from 'react-native';
-import ColorPicker from 'react-native-wheel-color-picker';
+
+import ColorTemperatureSlider from '@/components/ColorTemperatureSlider';
+import RainbowColorSlider from '@/components/RainbowColorSlider';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { useGlobalStyles } from '@/styles/globalStyles';
 
 export default function App() {
-  const [selectedLightMode, setSelectedLightMode] = useState();
-  const [selectedColor, setSelectedColor] = useState('#ffffff');
+  const [selectedLightMode, setSelectedLightMode] = useState('wl');
+  const styles = useGlobalStyles();
 
   return (
-    <View style={globalStyles.screenContainer} >
-      <Text style={globalStyles.label}>Select Light Mode:</Text>
-      <Picker
-        selectedValue={selectedLightMode}
-        onValueChange={(itemValue, itemIndex) => setSelectedLightMode(itemValue)}
-        style={globalStyles.picker}
-      >
-        <Picker.Item label="White Light" value="wl" />
-        <Picker.Item label="Colored Light" value="cl" />
-      </Picker>
+    <ThemedView style={styles.screenContainer}>
+      <ThemedText style={styles.heading}>Select Light Mode:</ThemedText>
+      <ThemedView style={styles.pickerContainer}>
+        <Picker
+          style={styles.picker}
+          selectedValue={selectedLightMode}
+          onValueChange={(itemValue, itemIndex) => setSelectedLightMode(itemValue)}
+        >
+          <Picker.Item label="White Light" value="wl" />
+          <Picker.Item label="Colored Light" value="cl" />
+        </Picker>
+      </ThemedView>
       {selectedLightMode === 'cl' && (
-        <ColorPicker 
-          color={selectedColor}
-          onColorChangeComplete={color => setSelectedColor(color)}
-          thumbSize={40}
-          sliderSize={40}
-          noSnap={true}
-        />
+        <ThemedView>
+          <ThemedText style={styles.label}>Select Color:</ThemedText>
+          <RainbowColorSlider />
+        </ThemedView>
       )}
-    </View>
+      {selectedLightMode === 'wl' && (
+        <ThemedView>
+          <ThemedText style={styles.label}>Select Color Temperature:</ThemedText>
+          <ColorTemperatureSlider />
+        </ThemedView>
+      )}
+    </ThemedView>
   );
 }
