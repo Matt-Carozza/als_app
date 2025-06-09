@@ -1,41 +1,38 @@
-// styles/globalStyles.ts
-import { StyleSheet } from 'react-native';
+import { StyleSheet, useColorScheme } from 'react-native';
+import { Colors } from '../constants/Colors';
 
-export const COLORS = {
-  primary: '#e4e4e4',
-  secondary: '#7d1d2a',
-  textDark: '#1a1a1a',
-  textLight: '#ffffff',
-  border: '#cccccc',
-};
+export function useGlobalStyles() {
+  const theme = useColorScheme() ?? 'light';
+  const palette = Colors[theme];
 
-export const globalStyles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: COLORS.primary,
-  },
-  heading: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.secondary,
-    marginBottom: 10,
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 8,
-    backgroundColor: COLORS.textLight,
-    marginVertical: 10,
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    color: COLORS.textDark,
-  },
-  label: {
-    fontSize: 16,
-    color: COLORS.textDark,
-    marginBottom: 6,
-  },
-});
+  return StyleSheet.create({
+    screenContainer: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: palette.background,
+    },
+    heading: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: palette.tint,
+      marginBottom: 10,
+    },
+    pickerContainer: {
+      borderWidth: 1,
+      borderColor: palette.icon,
+      borderRadius: 8,
+      backgroundColor: palette.background,
+      marginVertical: 10,
+    },
+    picker: {
+      height: 50,
+      width: '100%',
+      color: palette.text,
+    },
+    label: {
+      fontSize: 16,
+      color: palette.text,
+      marginBottom: 6,
+    },
+  });
+}
