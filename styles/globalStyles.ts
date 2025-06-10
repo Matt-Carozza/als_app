@@ -27,6 +27,7 @@ export function useGlobalStyles() {
     picker: {
       height: 50,
       width: '100%',
+      backgroundColor: palette.background,
       color: palette.text,
     },
     label: {
