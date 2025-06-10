@@ -14,7 +14,7 @@ const [colorTemp, setColorTemp] = useState(4000); // Default to 4000K
 
       <ThemedView style={styles.sliderContainer}>
       <LinearGradient
-        colors={['#FFD7B5', '#FFFCE6', '#E0F7FF']} // warm to cool
+        colors={['#f39d23', '#fdcf15', '#fbf8fc', '#cde9f4', '#62c4e2']} // warm to cool
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={StyleSheet.absoluteFill}
