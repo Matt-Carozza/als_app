@@ -43,9 +43,15 @@ export function useGlobalStyles() {
         color: palette.text,
       },
       label: {
-        fontSize: 16,
+        fontSize: 20,
         color: palette.text,
         marginBottom: 6,
+      },
+      switchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center', 
+        marginTop: 15 ,
+        marginBottom: 15 
       },
     }),
     // Plain object properties for theme-specific styles

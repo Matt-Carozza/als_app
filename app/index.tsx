@@ -61,9 +61,13 @@ export default function App() {
         )}
         {selectedLightMode === 'wl' && (
           <ThemedView>
-            <ThemedText style={styles.label}>Select Color Temperature:</ThemedText>
-            {!isAdaptiveLightingEnabled && <ColorTemperatureSlider />}
-            <ThemedView style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
+            {!isAdaptiveLightingEnabled && 
+            <>
+              <ThemedText style={styles.label}>Select Color Temperature:</ThemedText>
+              <ColorTemperatureSlider />
+            </>
+            }
+            <ThemedView style={styles.switchContainer}>
             <ThemedText style={styles.label}>Adaptive Lighting Mode</ThemedText>
             <Switch
               trackColor={switchTheme.trackColor}

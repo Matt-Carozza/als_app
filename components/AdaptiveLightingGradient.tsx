@@ -11,8 +11,8 @@ type Props = PropsWithChildren<{
 }>;
 
 export default function AdaptiveLightingGradient({wakeTime, sleepTime}: Props) {
-
-    return (
+  
+  return (
     <ThemedView style={styles.container}> 
       <ThemedText style={styles.topLeftLabel}>
         {wakeTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -27,11 +27,11 @@ export default function AdaptiveLightingGradient({wakeTime, sleepTime}: Props) {
         style={styles.sliderContainer}
       />
         <ThemedText style={styles.bottomLeftLabel}>Lights On</ThemedText>
+        <ThemedText style={styles.bottomMiddleLabel}>Midday</ThemedText>
         <ThemedText style={styles.bottomRightLabel}>Lights Off</ThemedText>
     </ThemedView>
   );
 }
-// ADD LABEL THAT SAYS MID DAY OR SOMETHING LIKE THAT
 
 const styles = StyleSheet.create({
   container: {
@@ -40,6 +40,15 @@ const styles = StyleSheet.create({
   topLeftLabel: {
     position: 'absolute',
     left: -10,
+    top: -20,
+    fontSize: 18,
+    marginTop: 12,
+  },
+  topMiddleLabel: {
+    position: 'absolute',
+    textAlign: 'center',
+    left: 0,
+    right: 0,
     top: -20,
     fontSize: 18,
     marginTop: 12,
@@ -53,14 +62,23 @@ const styles = StyleSheet.create({
   },
   bottomLeftLabel: {
     position: 'absolute',
-    right: -10,
+    left: -10,
+    bottom: -20,
+    fontSize: 18,
+    marginBottom: 12,
+  },
+  bottomMiddleLabel: {
+    position: 'absolute',
+    textAlign: 'center',
+    left: 0,
+    right: 0,
     bottom: -20,
     fontSize: 18,
     marginBottom: 12,
   },
   bottomRightLabel: {
     position: 'absolute',
-    left: -10,
+    right: -10,
     bottom: -20,
     fontSize: 18,
     marginBottom: 12,
@@ -68,6 +86,7 @@ const styles = StyleSheet.create({
   sliderContainer: {
     height: 40,
     justifyContent: 'center',
+    width: '100%',
   },
   slider: {
     width: '100%',
