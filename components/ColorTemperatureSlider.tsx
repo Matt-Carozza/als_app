@@ -2,10 +2,10 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-export default function ColorTempSlider() {
+export default function ColorTemperatureSlider() {
 const [colorTemp, setColorTemp] = useState(4000); // Default to 4000K
 
   return (
@@ -14,7 +14,8 @@ const [colorTemp, setColorTemp] = useState(4000); // Default to 4000K
 
       <ThemedView style={styles.sliderContainer}>
       <LinearGradient
-        colors={['#f39d23', '#fdcf15', '#fbf8fc', '#cde9f4', '#62c4e2']} // warm to cool
+        //colors={['#f39d23', '#fdcf15', '#fbf8fc', '#cde9f4', '#62c4e2']} // warm to cool
+        colors={['#fdcf15', '#fbf8fc', '#cde9f4']} // warm to cool
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={StyleSheet.absoluteFill}
