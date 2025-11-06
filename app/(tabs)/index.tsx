@@ -11,6 +11,7 @@ import { useGlobalStyles } from '@/styles/globalStyles';
 import { Switch } from 'react-native';
 
 export default function App() {
+  // TODO: Dimmer functionality
   const [selectedLightMode, setSelectedLightMode] = useState('wl');  
   const [wakeTime, setWakeTime] = useState(new Date(7,30)); // Default to 7:30 AM
   const [sleepTime, setSleepTime] = useState(new Date(11,30)); // Default to 11:30 PM
@@ -97,9 +98,6 @@ export default function App() {
         onClosePressed={handleAdaptiveLightingConfigClose}
         onConfirmPressed={handleAdaptiveLightingConfigSave}
       >
-        <ThemedText style={styles.label}>
-          Adaptive Lighting Configuration
-        </ThemedText>
       </AdaptiveLightingConfigScreen>
     </>
   );

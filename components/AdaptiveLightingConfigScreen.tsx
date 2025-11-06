@@ -1,9 +1,10 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useGlobalStyles } from '@/styles/globalStyles';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { PropsWithChildren, useState } from 'react';
-import { Button, Modal, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Button, Modal, Platform, TouchableOpacity, View } from 'react-native';
 
 
 type Props = PropsWithChildren<{
@@ -19,6 +20,8 @@ export default function AdaptiveLightingConfigScreen({ isVisible, wakeTime, slee
   const [localSleepTime, setLocalSleepTime] = useState<Date>(sleepTime || new Date());
   const [showWakeTimePicker, setShowWakeTimePicker] = useState(false);
   const [showSleepTimePicker, setShowSleepTimePicker] = useState(false);
+  
+  const styles = useGlobalStyles();
 
   React.useEffect(() => {
     if (isVisible) {
@@ -72,7 +75,7 @@ export default function AdaptiveLightingConfigScreen({ isVisible, wakeTime, slee
               />
             )}
             <TouchableOpacity style={styles.confirmButton} onPress={() => onConfirmPressed(localWakeTime, localSleepTime)}>
-              <ThemedText style={{ color: '#fff', textAlign: 'center' }}>Save</ThemedText>
+              <ThemedText style={styles.buttonText}>Save</ThemedText>
             </TouchableOpacity>
             {children}
           </ThemedView>
@@ -82,32 +85,3 @@ export default function AdaptiveLightingConfigScreen({ isVisible, wakeTime, slee
   );
 
 }
-
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    height: '50%',
-    width: '75%',
-    backgroundColor: '#25292e',
-    borderTopRightRadius: 18,
-    borderTopLeftRadius: 18,
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
-  },
-  confirmButton: {
-    position: 'absolute',
-    bottom: 20,
-    backgroundColor: '#04AA6D',
-    padding: 10,
-    width: '100%',
-  },
-  label: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-});

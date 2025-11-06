@@ -10,14 +10,13 @@ export function useGlobalStyles() {
     thumbColor: palette.secondary,
   };
   
-  const closeButton = {
-    "name": "close",
-    color: palette.secondary,
-    size: 50,
-  };
-
   return {
     ...StyleSheet.create({
+      tabBar: {
+        backgroundColor: palette.background,
+        borderTopWidth: 0,
+        height: 60,
+      },
       screenContainer: {
         flex: 1,
         padding: 20,
@@ -26,7 +25,7 @@ export function useGlobalStyles() {
       heading: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: palette.tint,
+        color: palette.secondary,
         marginBottom: 10,
       },
       pickerContainer: {
@@ -53,9 +52,51 @@ export function useGlobalStyles() {
         marginTop: 15 ,
         marginBottom: 15 
       },
+      deviceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+      },
+      buttonWithLabelsContainer: {
+        alignItems: 'center', 
+        marginTop: 20,
+        marginBottom: 20 
+      },
+      modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      modalContent: {
+        height: '50%',
+        width: '75%',
+        backgroundColor: '#25292e',
+        borderTopRightRadius: 18,
+        borderTopLeftRadius: 18,
+        borderBottomLeftRadius: 18,
+        borderBottomRightRadius: 18,
+      },
+      confirmButton: {
+        position: 'absolute',
+        bottom: 20,
+        backgroundColor: '#04AA6D',
+        padding: 10,
+        width: '100%',
+      },
+      deviceOptionButton: {
+        backgroundColor: '#2295f2',
+        bottom: 20,
+        padding: 10,
+        width: '100%',
+        marginTop: 20,
+        marginBottom: 20,
+      },
+      buttonText: {
+        color: '#fff',
+        textAlign: 'center',
+      },
     }),
     // Plain object properties for theme-specific styles
     switchTheme,
-    closeButton,
   };
 }
