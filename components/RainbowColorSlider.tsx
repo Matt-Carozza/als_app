@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { sendRGB } from '@/services/homeApi';
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
@@ -32,6 +33,9 @@ function hsvToRgb(h: number): [number, number, number] {
 export default function RainbowColorSlider() {
   const [hue, setHue] = useState(0); // 0–360 hue
   const rgb = hsvToRgb(hue);
+  const handleRGBSliderChange = () => {
+    sendRGB(...hsvToRgb(hue)).catch(console.error);
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -56,6 +60,7 @@ export default function RainbowColorSlider() {
           step={1}
           value={hue}
           onValueChange={setHue}
+          onSlidingComplete={handleRGBSliderChange}
           minimumTrackTintColor="transparent"
           maximumTrackTintColor="transparent"
           thumbTintColor="#fff"

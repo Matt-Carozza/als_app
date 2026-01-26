@@ -1,5 +1,5 @@
 import { Picker } from '@react-native-picker/picker';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import AdaptiveLightingConfigScreen from '@/components/AdaptiveLightingConfigScreen';
 import AdaptiveLightingGradient from '@/components/AdaptiveLightingGradient';
@@ -7,6 +7,8 @@ import ColorTemperatureSlider from '@/components/ColorTemperatureSlider';
 import RainbowColorSlider from '@/components/RainbowColorSlider';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { API_BASE_URL } from '@/constants/api';
+import { connectSocket, subscribeAction } from '@/services/socket';
 import { useGlobalStyles } from '@/styles/globalStyles';
 import { Switch } from 'react-native';
 
@@ -14,6 +16,7 @@ export default function App() {
   const [selectedLightMode, setSelectedLightMode] = useState('wl');  
   const [wakeTime, setWakeTime] = useState(new Date(7,30)); // Default to 7:30 AM
   const [sleepTime, setSleepTime] = useState(new Date(11,30)); // Default to 11:30 PM
+  const [statusPing, setStatusPing] = useState<boolean>(false);
   const [showAdaptiveLightingConfigScreen, setShowAdaptiveLightingConfigScreen] = useState<boolean>(false);
   const [isAdaptiveLightingEnabled, setIsAdaptiveLightingEnabled] = useState<boolean>(false);
   const toggleAdaptiveLightingSwitch = () => setIsAdaptiveLightingEnabled(previousState => !previousState);
@@ -39,10 +42,31 @@ export default function App() {
     setShowAdaptiveLightingConfigScreen(false);
   };
 
+  useEffect(() => {
+    connectSocket(API_BASE_URL);
+    const unsubscribe = subscribeAction('STATUS', event => {
+        setStatusPing(true);
+        setTimeout(() => setStatusPing(false), 200); // blink for 200ms
+      }
+    );
+    
+    return unsubscribe;
+  }, []);
+
   return (
     <>
       <ThemedView style={styles.screenContainer}>
         <ThemedText style={styles.heading}>Select Light Mode:</ThemedText>
+        {/* Status indicator */}
+        <ThemedView
+          style={{
+            width: 20,
+            height: 20,
+            borderRadius: 10,
+            backgroundColor: statusPing ? 'green' : 'red',
+            marginBottom: 16,
+          }}
+        />
         <ThemedView style={styles.pickerContainer}>
           <Picker
             style={styles.picker}
