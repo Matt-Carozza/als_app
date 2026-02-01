@@ -1,6 +1,7 @@
+import { ServerEvent } from '@shared/events';
 import express from 'express';
-import mqtt, { MqttClient } from 'mqtt';
 import { createServer } from 'http';
+import mqtt, { MqttClient } from 'mqtt';
 import { Server as WebSocketServer } from 'socket.io';
 
 const app = express();
@@ -55,14 +56,12 @@ client.on('connect', () => {
 client.on('message', (topic: string, payload: Buffer) => {
   const message = JSON.parse(payload.toString());
   
-  console.log(`${message.origin}`);
-
-  const event = {
-    origin: message.origin,
-    device: message.device,
-    action: message.action,
+  const event: ServerEvent = {
+    origin:  message.origin,
+    device:  message.device,
+    action:  message.action,
     payload: message.payload
-  };
+  }
 
   console.log(`Received message on ${topic}: ${payload}`);
   
@@ -101,6 +100,6 @@ app.post('/rgb', (req, res) => {
 });
 
 // Start the Express server
-httpServer.listen(port, () => {
+httpServer.listen(port, "127.0.0.1", () => {
   console.log(`Express server listening at http://localhost:${port}`);
 });

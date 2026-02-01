@@ -1,0 +1,16 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/events"
+    },
+    {
+      "path": "./mobile"
+    },
+    {
+      "path": "./server"
+    }
+  ],
+  "compilerOptions": {},
+  "extends": "expo/tsconfig.base"
+}

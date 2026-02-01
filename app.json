@@ -1,0 +1,8 @@
+{
+  "android": {
+    "package": "com.anonymous.alsmonorepo"
+  },
+  "expo": {
+    "entryPoint": "./node_modules/expo-router/entry"
+  }
+}

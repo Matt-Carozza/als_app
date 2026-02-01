@@ -1,25 +1,14 @@
 {
-  "name": "als_server",
+  "name": "server",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "start:local": "ts-node src/index.ts local",
-    "start:public": "ts-node src/index.ts public"
+    "dev": "tsx watch src/index.ts",
+    "dev:local": "tsx watch src/index.ts local",
+    "dev:public": "tsx watch src/index.ts public"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@types/express": "^5.0.5",
-    "@types/node": "^24.10.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "express": "^5.1.0",
-    "mqtt": "^5.14.1",
-    "socket.io": "^4.8.1"
-  }
+  "description": ""
 }

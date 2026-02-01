@@ -1,5 +1,5 @@
+import { ServerEvent } from '@shared/events';
 import { io, Socket } from 'socket.io-client';
-import { ServerEvent } from './events';
 
 let socket: Socket | null = null;
 

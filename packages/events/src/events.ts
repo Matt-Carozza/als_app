@@ -9,6 +9,5 @@ export type StatusEvent = BaseEvent<'STATUS', {
     connected_to_broker: boolean;
 }>;
 
-
 export type ServerEvent = 
     | StatusEvent;
