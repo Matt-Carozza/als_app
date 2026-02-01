@@ -1,4 +1,6 @@
-import { execSync, spawn } from "child_process";
+import { ChildProcess, execSync, spawn } from "child_process";
+
+const children: ChildProcess[] = [];
 
 function run(cmd: string, args: string[], cwd: string) {
     const p = spawn(cmd, args, {
@@ -24,6 +26,25 @@ try {
     process.exit(1);
 }
 
+function shutdown() {
+  console.log("\nShutting down...");
+
+  for (const child of children) {
+    if (!child.killed) {
+      child.kill("SIGINT");
+    }
+  }
+
+  try {
+    execSync("adb reverse --remove tcp:3000", { stdio: "ignore" });
+  } catch {}
+
+  process.exit(0);
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+
 console.log("Setting up port forwarding...");
 execSync("adb reverse tcp:3000 tcp:3000", {stdio: "inherit"});
 
@@ -32,11 +53,3 @@ run("npm", ["run", "dev:public"], "./server");
 
 console.log("Starting Android app...")
 run("npm", ["run", "dev:android"], "./mobile");
-
-process.on("exit", () => {
-    try {
-        execSync("adb reverse --remove tcp:3000");
-    } catch {
-        console.error("Unable to forwarding port 3000 from android device");
-    }
-})
