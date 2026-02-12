@@ -8,14 +8,16 @@ import RainbowColorSlider from '@/components/RainbowColorSlider';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { API_BASE_URL } from '@/constants/api';
+import { sendWakeAndSleepTime } from '@/services/homeApi';
 import { connectSocket, subscribeAction } from '@/services/socket';
 import { useGlobalStyles } from '@/styles/globalStyles';
+import { HHMM } from '@shared/domain';
 import { Switch } from 'react-native';
 
 export default function App() {
   const [selectedLightMode, setSelectedLightMode] = useState('wl');  
-  const [wakeTime, setWakeTime] = useState(new Date(7,30)); // Default to 7:30 AM
-  const [sleepTime, setSleepTime] = useState(new Date(11,30)); // Default to 11:30 PM
+  const [wakeTime, setWakeTime]   = useState<HHMM>("7:30" as HHMM); // Default to 7:30 AM
+  const [sleepTime, setSleepTime] = useState<HHMM>("11:30" as HHMM); // Default to 11:30 PM
   const [statusPing, setStatusPing] = useState<boolean>(false);
   const [showAdaptiveLightingConfigScreen, setShowAdaptiveLightingConfigScreen] = useState<boolean>(false);
   const [isAdaptiveLightingEnabled, setIsAdaptiveLightingEnabled] = useState<boolean>(false);
@@ -36,9 +38,10 @@ export default function App() {
     setIsAdaptiveLightingEnabled(false);
   };
   
-  const handleAdaptiveLightingConfigSave = (wakeTime: Date, sleepTime: Date) => {
+  const handleAdaptiveLightingConfigSave = (wakeTime: HHMM, sleepTime: HHMM) => {
     setWakeTime(wakeTime);
     setSleepTime(sleepTime);
+    sendWakeAndSleepTime(wakeTime, sleepTime);
     setShowAdaptiveLightingConfigScreen(false);
   };
 

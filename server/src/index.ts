@@ -3,6 +3,7 @@ import express from 'express';
 import { createServer } from 'http';
 import mqtt, { MqttClient } from 'mqtt';
 import { Server as WebSocketServer } from 'socket.io';
+import { handleSetRGB, handleWakeAndSleep } from './handlers/light';
 
 const app = express();
 app.use(express.json());
@@ -10,8 +11,7 @@ app.use(express.json());
 const port = 3000;
 
 // Topics
-const statusTopic = '/status';
-const commandTopic = '/mainControl/commands';
+const statusTopic = '/als/status';
 
 // MQTT broker configuration
 var brokerUrl: string;
@@ -39,6 +39,14 @@ const io = new WebSocketServer(httpServer, {
   cors: { origin: "*" }
 });
 
+const commandHandlers: Record<
+  string,
+  (payload: any, target?: string) => Promise<void>
+> = {
+  SET_RGB: handleSetRGB,
+  SET_WAKE_AND_SLEEP: handleWakeAndSleep, 
+};
+
 // Connect to the MQTT broker
 client.on('connect', () => {
   console.log('Connected to MQTT broker');
@@ -54,7 +62,14 @@ client.on('connect', () => {
 });
 
 client.on('message', (topic: string, payload: Buffer) => {
-  const message = JSON.parse(payload.toString());
+  const raw = payload.toString();
+  let message;
+  try {
+    message = JSON.parse(raw);
+  } catch {
+    console.warn(`Non-JSON message received on ${topic}: ${raw}`);
+    return;
+  }
   
   const event: ServerEvent = {
     origin:  message.origin,
@@ -69,37 +84,38 @@ client.on('message', (topic: string, payload: Buffer) => {
   io.emit('event', event);
 });
 
-app.post('/rgb', (req, res) => {
-  const { r, g, b } = req.body;
-  
-  console.log("Received RGB Message");
-
-  if (typeof r !== 'number' || typeof g !== 'number' || typeof b !== 'number') {
-    return res.status(400).send('Invalid RGB values');
-  }
-
-  const message = {
-    origin: 'ORIGIN_APP',
-    device: 'LIGHT',
-    action: 'SET',
-    payload: {
-      r: r, g: g, b: b
-    }
-  }
-  const payload = JSON.stringify(message);
-
-  client.publish(commandTopic, payload, { qos: 1 }, (err) => {
-    if (err) {
-      res.status(500).json({
-        error: 'Failed to publish RGB message'
+app.post('/command', async (req, res) => {
+  try {
+    const { action, payload, target } = req.body;
+    
+    if (!target) {
+      return res.status(400).json({
+        error: 'Target is required. Use "all" for broadcast.'
       });
-    } else {
-      res.sendStatus(204);
     }
-  });
+    
+    const handler = commandHandlers[action];
+    if (!handler) {
+      return res.status(400).json({ error: 'Unknown action'});
+    }
+    console.log(`[COMMAND]: ${action}`);
+
+    await handler(payload, target);
+    res.sendStatus(204);
+
+  } catch (err) {
+    console.error('Command failed', err);
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
 });
+
+export async function publish(topic: string, msg: ServerEvent) {
+  await client.publish(topic, JSON.stringify(msg));
+}
 
 // Start the Express server
 httpServer.listen(port, "127.0.0.1", () => {
   console.log(`Express server listening at http://localhost:${port}`);
 });
+  
+  

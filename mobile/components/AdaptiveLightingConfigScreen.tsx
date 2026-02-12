@@ -2,42 +2,42 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { dateToHHMM, HHMM, hhmmToDate, toStandardTime } from '@shared/domain';
 import React, { PropsWithChildren, useState } from 'react';
 import { Button, Modal, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-
 type Props = PropsWithChildren<{
   isVisible: boolean;
-  wakeTime: Date;
-  sleepTime: Date;
+  wakeTime: HHMM;
+  sleepTime: HHMM;
   onClosePressed: () => void;
-  onConfirmPressed: (wakeTime: Date, sleepTime: Date) => void;
+  onConfirmPressed: (wakeTime: HHMM, sleepTime: HHMM) => void;
 }>;
 
 export default function AdaptiveLightingConfigScreen({ isVisible, wakeTime, sleepTime, children, onClosePressed, onConfirmPressed }: Props) {
-  const [localWakeTime, setLocalWakeTime] = useState<Date>(wakeTime || new Date());
-  const [localSleepTime, setLocalSleepTime] = useState<Date>(sleepTime || new Date());
+  const [localWakeTime, setLocalWakeTime] = useState<HHMM>(wakeTime);
+  const [localSleepTime, setLocalSleepTime] = useState<HHMM>(sleepTime);
   const [showWakeTimePicker, setShowWakeTimePicker] = useState(false);
   const [showSleepTimePicker, setShowSleepTimePicker] = useState(false);
 
   React.useEffect(() => {
     if (isVisible) {
-      setLocalWakeTime(wakeTime || new Date(7, 0)); // Default to 7:00 AM if no wakeTime provided
-      setLocalSleepTime(sleepTime || new Date(11, 0)); // Default to 11:00 PM if no sleepTime provided
+      setLocalWakeTime(wakeTime); // Default to 7:00 AM if no wakeTime provided
+      setLocalSleepTime(sleepTime); // Default to 11:00 PM if no sleepTime provided
     }
   }, [isVisible, wakeTime, sleepTime]);
 
   const onChangeWakeTime = (event: any, selectedDate: Date | undefined) => {
     setShowWakeTimePicker(Platform.OS === 'ios');
     if (selectedDate) {
-      setLocalWakeTime(selectedDate);
+      setLocalWakeTime(dateToHHMM(selectedDate));
     }
   };
 
   const onChangeSleepTime = (event: any, selectedDate: Date | undefined) => {
     setShowSleepTimePicker(Platform.OS === 'ios');
     if (selectedDate) {
-      setLocalSleepTime(selectedDate);
+      setLocalSleepTime(dateToHHMM(selectedDate));
     }
   };
 
@@ -50,10 +50,10 @@ export default function AdaptiveLightingConfigScreen({ isVisible, wakeTime, slee
               <MaterialIcons name="close" color="#fff" size={40} />
             </TouchableOpacity>
             <ThemedText style={styles.label}>Wake Up Time</ThemedText>
-            <Button title={localWakeTime.toLocaleTimeString()} onPress={() => setShowWakeTimePicker(true)} />
+            <Button title={toStandardTime(localWakeTime)} onPress={() => setShowWakeTimePicker(true)} />
             {showWakeTimePicker && (
               <DateTimePicker
-                value={localWakeTime}
+                value={hhmmToDate(localWakeTime)}
                 mode="time"
                 is24Hour={false}
                 display={Platform.OS === 'ios' ? 'spinner' : 'default'}
@@ -61,10 +61,10 @@ export default function AdaptiveLightingConfigScreen({ isVisible, wakeTime, slee
               />
             )}
             <ThemedText style={styles.label}>Sleep Time</ThemedText>
-            <Button title={localSleepTime.toLocaleTimeString()} onPress={() => setShowSleepTimePicker(true)} />
+            <Button title={toStandardTime(localSleepTime)} onPress={() => setShowSleepTimePicker(true)} />
             {showSleepTimePicker && (
               <DateTimePicker
-                value={localSleepTime}
+                value={hhmmToDate(localWakeTime)}
                 mode="time"
                 is24Hour={false}
                 display={Platform.OS === 'ios' ? 'spinner' : 'default'}

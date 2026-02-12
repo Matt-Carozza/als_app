@@ -1,3 +1,4 @@
+import { HHMM, toStandardTime } from "@shared/domain";
 import { LinearGradient } from "expo-linear-gradient";
 import { PropsWithChildren } from "react";
 import { StyleSheet } from "react-native";
@@ -6,8 +7,8 @@ import { ThemedView } from "./ThemedView";
 
 
 type Props = PropsWithChildren<{
-  wakeTime: Date;
-  sleepTime: Date;
+  wakeTime: HHMM;
+  sleepTime: HHMM;
 }>;
 
 export default function AdaptiveLightingGradient({wakeTime, sleepTime}: Props) {
@@ -15,10 +16,10 @@ export default function AdaptiveLightingGradient({wakeTime, sleepTime}: Props) {
   return (
     <ThemedView style={styles.container}> 
       <ThemedText style={styles.topLeftLabel}>
-        {wakeTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        {toStandardTime(wakeTime)}
       </ThemedText>
       <ThemedText style={styles.topRightLabel}>
-        {sleepTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        {toStandardTime(sleepTime)}
       </ThemedText>
       <LinearGradient
         colors={['#fed260', '#fef6e5', '#cff0f8', '#fef6e5', '#fed260']} 

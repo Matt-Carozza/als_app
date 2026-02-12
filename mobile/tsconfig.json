@@ -1,13 +1,13 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": ["../tsconfig.base.json", "../tsconfig.expo.json"],
   "compilerOptions": {
-    "strict": true,
-    "jsx": "react-native",
     "baseUrl": ".",
+    "composite": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@shared/api": ["../packages/api/src/index"],
+      "@shared/events": ["../packages/events/src/index"],
+      "@shared/domain": ["../packages/domain/src/index"] 
     }
   },
   "include": [
@@ -15,5 +15,10 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
+  ],
+  "references": [
+    { "path" : "../packages/api" },
+    { "path" : "../packages/events" },
+    { "path" : "../packages/domain" }
   ]
 }

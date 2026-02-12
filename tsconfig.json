@@ -5,6 +5,12 @@
       "path": "./packages/events"
     },
     {
+      "path": "./packages/domain"
+    },
+    {
+      "path": "./packages/api"
+    },
+    {
       "path": "./mobile"
     },
     {

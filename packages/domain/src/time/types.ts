@@ -1,0 +1,1 @@
+export type HHMM = string & { readonly __brand: 'HHMM' }

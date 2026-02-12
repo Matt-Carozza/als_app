@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@shared/events": ["packages/events/src"],
+      "@shared/events/*": ["packages/events/src/*"],
+
+      "@shared/domain": ["packages/domain/src"],
+      "@shared/domain/*": ["packages/domain/src/*"],
+      
+      "@shared/api": ["packages/api/src"],
+      "@shared/api/*": ["packages/api/src/*"]
+    },
+
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
