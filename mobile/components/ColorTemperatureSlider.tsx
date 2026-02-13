@@ -1,12 +1,22 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { sendRGB } from '@/services/homeApi';
 import Slider from '@react-native-community/slider';
+import { colorTempToRGB } from '@shared/domain';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 export default function ColorTemperatureSlider() {
-const [colorTemp, setColorTemp] = useState(4000); // Default to 4000K
+  const [colorTemp, setColorTemp] = useState(4000); // Default to 4000K
+  const handleColorTempChange = () => {
+    const color = colorTempToRGB(colorTemp);
+    if (color) {
+      sendRGB(...color).catch(console.error);
+    } else {
+      console.error("Kelvin value not found in table")
+    }
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -27,6 +37,7 @@ const [colorTemp, setColorTemp] = useState(4000); // Default to 4000K
         step={100}
         value={colorTemp}
         onValueChange={setColorTemp}
+        onSlidingComplete={handleColorTempChange}
         minimumTrackTintColor="transparent"
         maximumTrackTintColor="transparent"
         thumbTintColor="#ffffff"
