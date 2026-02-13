@@ -16,7 +16,8 @@ export function hhmmToDate(hhmm: HHMM): Date {
 
 export function toStandardTime(hhmm: HHMM): string {
   const [hours, minutes] = hhmm.split(':').map(Number);
-  const meridiem: string = (hours / 12 > 1) ? "PM" : "AM";
+  const meridiem: string = hours >= 12 ? "PM" : "AM";
   
-  return `${hours % 12}:${minutes} ${meridiem}`;
+  const displayHour = hours % 12 || 12;
+  return `${displayHour}:${minutes.toString().padStart(2,'0')} ${meridiem}`;
 }

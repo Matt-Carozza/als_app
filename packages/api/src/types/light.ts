@@ -1,10 +1,6 @@
 import { HHMM } from "@shared/domain";
-import { ApiCommand } from "./base";
+import { Actions, ApiCommand } from "./base";
 
-export const Actions = {
-    SET_RGB: 'SET_RGB',
-    SET_WAKE_AND_SLEEP: 'SET_WAKE_AND_SLEEP',
-} as const;
 
 export type SetRGBCommand = ApiCommand<typeof Actions.SET_RGB, { 
     r: number;
@@ -13,6 +9,6 @@ export type SetRGBCommand = ApiCommand<typeof Actions.SET_RGB, {
 }>;
 
 export type SetWakeAndSleepCommand = ApiCommand<typeof Actions.SET_WAKE_AND_SLEEP, {
-    wakeTime: HHMM;
-    sleepTime: HHMM;
+    wake_time: HHMM;
+    sleep_time: HHMM;
 }>;

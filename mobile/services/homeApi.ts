@@ -26,7 +26,7 @@ export async function sendWakeAndSleepTime(
   const cmd: SetWakeAndSleepCommand = {
     target: 'all',
     action: 'SET_WAKE_AND_SLEEP',
-    payload: { wakeTime: wakeTime, sleepTime: sleepTime },
+    payload: { wake_time: wakeTime, sleep_time: sleepTime },
   };
   
   return apiFetch('/command', {

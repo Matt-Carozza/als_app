@@ -1,9 +1,9 @@
-import { HHMM } from '@shared/domain';
+import { SetRGBCommand, SetWakeAndSleepCommand } from '@shared/api';
 import { ServerEvent } from "@shared/events";
 import { sendCommand } from "../commandBus";
 
 export async function handleSetRGB(
-  payload: { r: number; g: number; b: number },
+  payload: SetRGBCommand['payload'],
   target?: string
 ) {
   if (
@@ -20,13 +20,13 @@ export async function handleSetRGB(
     action: 'SET_RGB',
     payload,
   };
-
+  
   await sendCommand(brokerMessage, 
     target ?? 'all')
 }
 
 export async function handleWakeAndSleep(
-  payload: { wake_time: HHMM, sleep_time: HHMM},
+  payload: SetWakeAndSleepCommand['payload'],
   target?: string
 ) {
   // if (

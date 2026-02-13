@@ -1,9 +1,12 @@
+import { Actions } from '@shared/api';
+import { ApiCommand } from '@shared/api/types/base';
 import { ServerEvent } from '@shared/events';
 import express from 'express';
 import { createServer } from 'http';
 import mqtt, { MqttClient } from 'mqtt';
 import { Server as WebSocketServer } from 'socket.io';
 import { handleSetRGB, handleWakeAndSleep } from './handlers/light';
+import { validateSetRGB, validateWakeAndSleep } from './validation/light';
 
 const app = express();
 app.use(express.json());
@@ -40,7 +43,7 @@ const io = new WebSocketServer(httpServer, {
 });
 
 const commandHandlers: Record<
-  string,
+  typeof Actions[keyof typeof Actions],
   (payload: any, target?: string) => Promise<void>
 > = {
   SET_RGB: handleSetRGB,
@@ -86,7 +89,8 @@ client.on('message', (topic: string, payload: Buffer) => {
 
 app.post('/command', async (req, res) => {
   try {
-    const { action, payload, target } = req.body;
+    const { action, payload, target } = 
+    req.body as ApiCommand<keyof typeof commandHandlers, unknown>;
     
     if (!target) {
       return res.status(400).json({
@@ -94,11 +98,22 @@ app.post('/command', async (req, res) => {
       });
     }
     
+
     const handler = commandHandlers[action];
     if (!handler) {
       return res.status(400).json({ error: 'Unknown action'});
     }
     console.log(`[COMMAND]: ${action}`);
+    
+    switch(action as typeof Actions[keyof typeof Actions]) {
+      case 'SET_RGB':
+        if (!validateSetRGB(payload))
+          return res.status(400).json({ error: 'Invalid RGB payload'});
+        break;
+      case 'SET_WAKE_AND_SLEEP':
+        if (!validateWakeAndSleep(payload))
+          return res.status(400).json({ error: 'Invalid HHMM payload'});
+    }
 
     await handler(payload, target);
     res.sendStatus(204);
