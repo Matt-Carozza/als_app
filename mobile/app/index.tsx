@@ -8,7 +8,7 @@ import RainbowColorSlider from '@/components/RainbowColorSlider';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { API_BASE_URL } from '@/constants/api';
-import { sendWakeAndSleepTime } from '@/services/homeApi';
+import { disableAdaptiveLightingMode, enableAdaptiveLightingMode } from '@/services/homeApi';
 import { connectSocket, subscribeAction } from '@/services/socket';
 import { useGlobalStyles } from '@/styles/globalStyles';
 import { dateToHHMM, HHMM } from '@shared/domain';
@@ -33,6 +33,8 @@ export default function App() {
   const handleAdaptiveLightingChange = (modeEnabled: boolean) => {
     if (modeEnabled) {
       setShowAdaptiveLightingConfigScreen(true);
+    } else {
+      disableAdaptiveLightingMode();
     }
     toggleAdaptiveLightingSwitch();
   };
@@ -45,7 +47,7 @@ export default function App() {
   const handleAdaptiveLightingConfigSave = (wakeTime: HHMM, sleepTime: HHMM) => {
     setWakeTime(wakeTime);
     setSleepTime(sleepTime);
-    sendWakeAndSleepTime(wakeTime, sleepTime);
+    enableAdaptiveLightingMode(wakeTime, sleepTime);
     setShowAdaptiveLightingConfigScreen(false);
   };
 

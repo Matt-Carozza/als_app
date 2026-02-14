@@ -6,7 +6,7 @@ import { createServer } from 'http';
 import mqtt, { MqttClient } from 'mqtt';
 import { Server as WebSocketServer } from 'socket.io';
 import { handleSetRGB, handleWakeAndSleep } from './handlers/light';
-import { validateSetRGB, validateWakeAndSleep } from './validation/light';
+import { validateSetRGB, validateToggleAdaptiveLightingMode } from './validation/light';
 
 const app = express();
 app.use(express.json());
@@ -47,7 +47,7 @@ const commandHandlers: Record<
   (payload: any, target?: string) => Promise<void>
 > = {
   SET_RGB: handleSetRGB,
-  SET_WAKE_AND_SLEEP: handleWakeAndSleep, 
+  TOGGLE_ADAPTIVE_LIGHTING_MODE: handleWakeAndSleep, 
 };
 
 // Connect to the MQTT broker
@@ -106,12 +106,12 @@ app.post('/command', async (req, res) => {
     console.log(`[COMMAND]: ${action}`);
     
     switch(action as typeof Actions[keyof typeof Actions]) {
-      case 'SET_RGB':
+      case Actions.SET_RGB:
         if (!validateSetRGB(payload))
           return res.status(400).json({ error: 'Invalid RGB payload'});
         break;
-      case 'SET_WAKE_AND_SLEEP':
-        if (!validateWakeAndSleep(payload))
+      case Actions.TOGGLE_ADAPTIVE_LIGHTING_MODE:
+        if (!validateToggleAdaptiveLightingMode(payload))
           return res.status(400).json({ error: 'Invalid HHMM payload'});
     }
 
@@ -132,5 +132,3 @@ export async function publish(topic: string, msg: ServerEvent) {
 httpServer.listen(port, "127.0.0.1", () => {
   console.log(`Express server listening at http://localhost:${port}`);
 });
-  
-  

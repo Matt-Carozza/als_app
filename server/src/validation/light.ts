@@ -15,7 +15,13 @@ export function validateSetRGB(payload: any) {
          typeof payload?.b === 'number';
 }
 
-export function validateWakeAndSleep(payload: any) {
+export function validateToggleAdaptiveLightingMode(payload: any) {
+  const isEnabled = Boolean(payload?.enabled);
+  
+  if (!isEnabled) {
+    return true;
+  }
+
   return isHHMM(payload?.wake_time) &&
          isHHMM(payload?.sleep_time);
 }

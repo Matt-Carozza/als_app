@@ -1,4 +1,4 @@
-import { SetRGBCommand, SetWakeAndSleepCommand } from '@shared/api';
+import { Actions, SetRGBCommand, SetWakeAndSleepCommand } from '@shared/api';
 import { ServerEvent } from "@shared/events";
 import { sendCommand } from "../commandBus";
 
@@ -17,7 +17,7 @@ export async function handleSetRGB(
   const brokerMessage: ServerEvent = {
     origin: 'APP',
     device: 'LIGHT',
-    action: 'SET_RGB',
+    action: Actions.SET_RGB,
     payload,
   };
   
@@ -39,7 +39,7 @@ export async function handleWakeAndSleep(
   const brokerMessage: ServerEvent = {
     origin: 'APP',
     device: 'LIGHT',
-    action: 'SET_WAKE_AND_SLEEP',
+    action: Actions.TOGGLE_ADAPTIVE_LIGHTING_MODE,
     payload,
   };
 

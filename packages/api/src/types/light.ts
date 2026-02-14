@@ -8,7 +8,13 @@ export type SetRGBCommand = ApiCommand<typeof Actions.SET_RGB, {
     b: number;
 }>;
 
-export type SetWakeAndSleepCommand = ApiCommand<typeof Actions.SET_WAKE_AND_SLEEP, {
-    wake_time: HHMM;
-    sleep_time: HHMM;
-}>;
+export type SetWakeAndSleepCommand = ApiCommand<typeof Actions.TOGGLE_ADAPTIVE_LIGHTING_MODE,
+    | {
+        enabled: true;
+        wake_time: HHMM;
+        sleep_time: HHMM;
+      }
+    | {
+        enabled: false;
+      }
+>;
