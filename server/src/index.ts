@@ -62,6 +62,14 @@ client.on('connect', () => {
       console.error('Subscription error:', err);
     }
   });
+
+  client.subscribe("/als/light/room/1", (err) => {
+    if (!err) {
+      console.log('Subscribed to ' + statusTopic);
+    } else {
+      console.error('Subscription error:', err);
+    }
+  });
 });
 
 client.on('message', (topic: string, payload: Buffer) => {

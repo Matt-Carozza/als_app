@@ -5,16 +5,16 @@ export type CommandTarget =
 
 export function resolveCommandTopic(target?: string): string {
   if (!target || target === 'all') {
-    return '/commands';
+    return '/als/commands';
   }
 
   if (target.startsWith('room:')) {
-    return `/commands/room/${target.split(':')[1]}`;
+    return `/als/commands/room/${target.split(':')[1]}`;
   }
 
   if (target.startsWith('device:')) {
-    return `/commands/device/${target.split(':')[1]}`;
+    return `/als/commands/device/${target.split(':')[1]}`;
   }
 
-  return '/commands';
+  return '/als/commands';
 }

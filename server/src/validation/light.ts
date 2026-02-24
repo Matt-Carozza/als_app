@@ -10,7 +10,8 @@ export function isHHMM(s: unknown): s is string {
 }
 
 export function validateSetRGB(payload: any) {
-  return typeof payload?.r === 'number' &&
+  return typeof payload?.room_id === 'number' &&
+         typeof payload?.r === 'number' &&
          typeof payload?.g === 'number' &&
          typeof payload?.b === 'number';
 }

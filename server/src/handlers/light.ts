@@ -7,6 +7,7 @@ export async function handleSetRGB(
   target?: string
 ) {
   if (
+    payload.room_id < 0 || payload.room_id > 255 ||
     payload.r < 0 || payload.r > 255 ||
     payload.g < 0 || payload.g > 255 ||
     payload.b < 0 || payload.b > 255

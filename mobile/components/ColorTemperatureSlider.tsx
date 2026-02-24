@@ -7,12 +7,17 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-export default function ColorTemperatureSlider() {
+type ColorTemperatureSliderProps = {
+  room_id: number;
+}
+
+export default function ColorTemperatureSlider( {room_id}: ColorTemperatureSliderProps ) {
   const [colorTemp, setColorTemp] = useState(4000); // Default to 4000K
   const handleColorTempChange = () => {
     const color = colorTempToRGB(colorTemp);
     if (color) {
-      sendRGB(...color).catch(console.error);
+      const [r, g, b] = color;
+      sendRGB(room_id, r, g, b).catch(console.error);
     } else {
       console.error("Kelvin value not found in table")
     }

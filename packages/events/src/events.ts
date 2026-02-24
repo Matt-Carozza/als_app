@@ -13,6 +13,7 @@ export type StatusEvent = BaseEvent<'STATUS', {
 }>;
 
 export type LightSetEvent = BaseEvent<typeof Actions.SET_RGB, {
+    room_id: number,
     r: number,
     g: number,
     b: number
@@ -20,11 +21,13 @@ export type LightSetEvent = BaseEvent<typeof Actions.SET_RGB, {
 
 export type LightSetWakeAndSleep = BaseEvent<typeof Actions.TOGGLE_ADAPTIVE_LIGHTING_MODE,
     | {
+        room_id: number,
         enabled: true;
         wake_time: HHMM;
         sleep_time: HHMM;
       }
     | {
+        room_id: number,
         enabled: false;
       }
 >;

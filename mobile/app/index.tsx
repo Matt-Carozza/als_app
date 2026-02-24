@@ -16,6 +16,7 @@ import { Switch } from 'react-native';
 
 export default function App() {
   const [selectedLightMode, setSelectedLightMode] = useState('wl');  
+  const [selectedRoom, setSelectedRoom] = useState(0);  
   const [wakeTime, setWakeTime]   = useState<HHMM>(
     dateToHHMM(new Date(0,0,0,7,30)) // Default to 7:30 AM
   );   
@@ -34,7 +35,7 @@ export default function App() {
     if (modeEnabled) {
       setShowAdaptiveLightingConfigScreen(true);
     } else {
-      disableAdaptiveLightingMode();
+      disableAdaptiveLightingMode(selectedRoom);
     }
     toggleAdaptiveLightingSwitch();
   };
@@ -47,7 +48,7 @@ export default function App() {
   const handleAdaptiveLightingConfigSave = (wakeTime: HHMM, sleepTime: HHMM) => {
     setWakeTime(wakeTime);
     setSleepTime(sleepTime);
-    enableAdaptiveLightingMode(wakeTime, sleepTime);
+    enableAdaptiveLightingMode(selectedRoom, wakeTime, sleepTime);
     setShowAdaptiveLightingConfigScreen(false);
   };
 
@@ -79,6 +80,20 @@ export default function App() {
         <ThemedView style={styles.pickerContainer}>
           <Picker
             style={styles.picker}
+            selectedValue={selectedRoom}
+            onValueChange={(itemValue, itemIndex) => setSelectedRoom(itemValue)}
+          >
+            <Picker.Item label="all" value={0} />
+            <Picker.Item label="Room 1" value={1} />
+            <Picker.Item label="Room 2" value={2} />
+            <Picker.Item label="Room 3" value={4} />
+            <Picker.Item label="Room 4" value={5} />
+            <Picker.Item label="Room 5" value={6} />
+          </Picker>
+        </ThemedView>
+        <ThemedView style={styles.pickerContainer}>
+          <Picker
+            style={styles.picker}
             selectedValue={selectedLightMode}
             onValueChange={(itemValue, itemIndex) => setSelectedLightMode(itemValue)}
           >
@@ -89,7 +104,7 @@ export default function App() {
         {selectedLightMode === 'cl' && (
           <ThemedView>
             <ThemedText style={styles.label}>Select Color:</ThemedText>
-            <RainbowColorSlider />
+            <RainbowColorSlider room_id={selectedRoom}/>
           </ThemedView>
         )}
         {selectedLightMode === 'wl' && (
@@ -97,7 +112,7 @@ export default function App() {
             {!isAdaptiveLightingEnabled && 
             <>
               <ThemedText style={styles.label}>Select Color Temperature:</ThemedText>
-              <ColorTemperatureSlider />
+              <ColorTemperatureSlider room_id={selectedRoom}/>
             </>
             }
             <ThemedView style={styles.switchContainer}>

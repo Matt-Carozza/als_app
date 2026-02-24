@@ -30,11 +30,16 @@ function hsvToRgb(h: number): [number, number, number] {
   ];
 }
 
-export default function RainbowColorSlider() {
+type RainbowColorSliderProps = {
+  room_id: number;
+}
+
+export default function RainbowColorSlider({ room_id }: RainbowColorSliderProps) {
   const [hue, setHue] = useState(0); // 0–360 hue
   const rgb = hsvToRgb(hue);
   const handleRGBSliderChange = () => {
-    sendRGB(...hsvToRgb(hue)).catch(console.error);
+    const [r, g, b] = hsvToRgb(hue);
+    sendRGB(room_id, r, g, b).catch(console.error);
   }
 
   return (
