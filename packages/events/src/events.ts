@@ -3,7 +3,7 @@ import { HHMM } from '@shared/domain';
 
 export interface BaseEvent<TAction extends string, TPayload> {
     origin: 'MAIN' | 'APP';
-    device: 'APP' | 'LIGHT';
+    device: 'APP' | 'LIGHT' | 'MAIN';
     action: TAction;
     payload: TPayload;
 }
