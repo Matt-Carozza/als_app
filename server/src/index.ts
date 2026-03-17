@@ -5,8 +5,11 @@ import express from 'express';
 import { createServer } from 'http';
 import mqtt, { MqttClient } from 'mqtt';
 import { Server as WebSocketServer } from 'socket.io';
-import { handleSetRGB, handleWakeAndSleep } from './handlers/light';
+import { handleSetRGB } from './handlers/light';
+import { handleWakeAndSleep } from './handlers/main';
+import { handleOffDelay } from './handlers/occ_sensor';
 import { validateSetRGB, validateToggleAdaptiveLightingMode } from './validation/light';
+import { validateSetOffDelay } from './validation/occ_sensor';
 
 const app = express();
 app.use(express.json());
@@ -48,6 +51,7 @@ const commandHandlers: Record<
 > = {
   SET_RGB: handleSetRGB,
   TOGGLE_ADAPTIVE_LIGHTING_MODE: handleWakeAndSleep, 
+  OCC_CONFIG_DELAY: handleOffDelay,
 };
 
 // Connect to the MQTT broker
@@ -56,14 +60,6 @@ client.on('connect', () => {
 
   // Subscribe to a status topic
   client.subscribe(statusTopic, (err) => {
-    if (!err) {
-      console.log('Subscribed to ' + statusTopic);
-    } else {
-      console.error('Subscription error:', err);
-    }
-  });
-
-  client.subscribe("/als/light/room/1", (err) => {
     if (!err) {
       console.log('Subscribed to ' + statusTopic);
     } else {
@@ -121,6 +117,9 @@ app.post('/command', async (req, res) => {
       case Actions.TOGGLE_ADAPTIVE_LIGHTING_MODE:
         if (!validateToggleAdaptiveLightingMode(payload))
           return res.status(400).json({ error: 'Invalid HHMM payload'});
+      case Actions.OCC_CONFIG_DELAY:
+        if (!validateSetOffDelay(payload))
+          return res.status(400).json({ error: 'Invalid off delay payload'});
     }
 
     await handler(payload, target);

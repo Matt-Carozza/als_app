@@ -1,4 +1,4 @@
-import { Actions, SetRGBCommand, SetWakeAndSleepCommand } from "@shared/api";
+import { Actions, SetOffDelayCommand, SetRGBCommand, SetWakeAndSleepCommand } from "@shared/api";
 import { HHMM } from "@shared/domain";
 import { apiFetch } from "./http";
 
@@ -47,6 +47,19 @@ export async function disableAdaptiveLightingMode(room_id: number): Promise<void
     target: 'all',
     action: Actions.TOGGLE_ADAPTIVE_LIGHTING_MODE,
     payload: { room_id, enabled: false },
+  };
+  
+  return apiFetch('/command', {
+    method: 'POST',
+    body: JSON.stringify(cmd)
+  })
+}
+
+export async function sendOffDelay(room_id: number, off_delay: number): Promise<void> {
+  const cmd: SetOffDelayCommand = {
+    target: 'all',
+    action: Actions.OCC_CONFIG_DELAY,
+    payload: { room_id, off_delay },
   };
   
   return apiFetch('/command', {

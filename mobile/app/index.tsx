@@ -8,7 +8,7 @@ import RainbowColorSlider from '@/components/RainbowColorSlider';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { API_BASE_URL } from '@/constants/api';
-import { disableAdaptiveLightingMode, enableAdaptiveLightingMode } from '@/services/homeApi';
+import { disableAdaptiveLightingMode, enableAdaptiveLightingMode, sendOffDelay } from '@/services/homeApi';
 import { connectSocket, subscribeAction } from '@/services/socket';
 import { useGlobalStyles } from '@/styles/globalStyles';
 import { dateToHHMM, HHMM } from '@shared/domain';
@@ -17,6 +17,7 @@ import { Switch } from 'react-native';
 export default function App() {
   const [selectedLightMode, setSelectedLightMode] = useState('wl');  
   const [selectedRoom, setSelectedRoom] = useState(0);  
+  const [offDelay, setOffDelay] = useState(1);  
   const [wakeTime, setWakeTime]   = useState<HHMM>(
     dateToHHMM(new Date(0,0,0,7,30)) // Default to 7:30 AM
   );   
@@ -51,6 +52,11 @@ export default function App() {
     enableAdaptiveLightingMode(selectedRoom, wakeTime, sleepTime);
     setShowAdaptiveLightingConfigScreen(false);
   };
+  
+  const handleOffDelayDropDownValueChange = (off_delay: number) => {
+    setOffDelay(off_delay);
+    sendOffDelay(selectedRoom, off_delay * 60)
+  }
 
   useEffect(() => {
     connectSocket(API_BASE_URL);
@@ -66,7 +72,6 @@ export default function App() {
   return (
     <>
       <ThemedView style={styles.screenContainer}>
-        <ThemedText style={styles.heading}>Select Light Mode:</ThemedText>
         {/* Status indicator */}
         <ThemedView
           style={{
@@ -77,6 +82,7 @@ export default function App() {
             marginBottom: 16,
           }}
         />
+        <ThemedText style={styles.heading}>Room:</ThemedText>
         <ThemedView style={styles.pickerContainer}>
           <Picker
             style={styles.picker}
@@ -91,6 +97,7 @@ export default function App() {
             <Picker.Item label="Room 5" value={6} />
           </Picker>
         </ThemedView>
+        <ThemedText style={styles.heading}>Config Mode:</ThemedText>
         <ThemedView style={styles.pickerContainer}>
           <Picker
             style={styles.picker}
@@ -103,7 +110,7 @@ export default function App() {
         </ThemedView>
         {selectedLightMode === 'cl' && (
           <ThemedView>
-            <ThemedText style={styles.label}>Select Color:</ThemedText>
+            <ThemedText style={styles.heading}>Select Color:</ThemedText>
             <RainbowColorSlider room_id={selectedRoom}/>
           </ThemedView>
         )}
@@ -111,7 +118,7 @@ export default function App() {
           <ThemedView>
             {!isAdaptiveLightingEnabled && 
             <>
-              <ThemedText style={styles.label}>Select Color Temperature:</ThemedText>
+              <ThemedText style={styles.heading}>Select Color Temperature:</ThemedText>
               <ColorTemperatureSlider room_id={selectedRoom}/>
             </>
             }
@@ -136,6 +143,21 @@ export default function App() {
             )}   
           </ThemedView>
         )}
+        <ThemedText style={styles.heading}>Occupancy Sensor Off Delay:</ThemedText>
+        <ThemedView style={styles.pickerContainer}>
+          <Picker
+            style={styles.picker}
+            selectedValue={offDelay}
+            onValueChange={(itemValue, itemIndex) => handleOffDelayDropDownValueChange(itemValue)}
+          >
+            <Picker.Item label="1 Minute" value={1} />
+            <Picker.Item label="5 Minutes" value={5} />
+            <Picker.Item label="15 Minutes" value={15} />
+            <Picker.Item label="30 Minutes" value={30} />
+            <Picker.Item label="45 Minutes" value={45} />
+            <Picker.Item label="60 Minutes" value={60} />
+          </Picker>
+        </ThemedView>
       </ThemedView>
 
       <AdaptiveLightingConfigScreen

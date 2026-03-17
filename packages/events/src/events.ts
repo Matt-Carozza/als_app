@@ -3,7 +3,7 @@ import { HHMM } from '@shared/domain';
 
 export interface BaseEvent<TAction extends string, TPayload> {
     origin: 'MAIN' | 'APP';
-    device: 'APP' | 'LIGHT' | 'MAIN';
+    device: 'APP' | 'LIGHT' | 'MAIN' | 'OCC';
     action: TAction;
     payload: TPayload;
 }
@@ -32,7 +32,13 @@ export type LightSetWakeAndSleep = BaseEvent<typeof Actions.TOGGLE_ADAPTIVE_LIGH
       }
 >;
 
+export type OccConfigDelay = BaseEvent<typeof Actions.OCC_CONFIG_DELAY, {
+    room_id: number,
+    off_delay: number
+}>;
+
 export type ServerEvent = 
     | StatusEvent
     | LightSetWakeAndSleep
-    | LightSetEvent;
+    | LightSetEvent
+    | OccConfigDelay;
