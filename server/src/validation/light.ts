@@ -22,7 +22,8 @@ export function validateToggleAdaptiveLightingMode(payload: any) {
   if (!isEnabled) {
     return true;
   }
-
+  
   return isHHMM(payload?.wake_time) &&
-         isHHMM(payload?.sleep_time);
+         isHHMM(payload?.sleep_time) &&
+         isHHMM(payload?.current_time);
 }
