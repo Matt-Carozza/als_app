@@ -5,6 +5,7 @@ import express from 'express';
 import { createServer } from 'http';
 import mqtt, { MqttClient } from 'mqtt';
 import { Server as WebSocketServer } from 'socket.io';
+import { sendCommand } from './commandBus';
 import { handleSetRGB } from './handlers/light';
 import { handleWakeAndSleep } from './handlers/main';
 import { handleOffDelay } from './handlers/occ_sensor';
@@ -17,7 +18,8 @@ app.use(express.json());
 const port = 3000;
 
 // Topics
-const statusTopic = '/als/status';
+const status_topic = '/als/status';
+const state_update_topic = '/als/app/state';
 
 // MQTT broker configuration
 var brokerUrl: string;
@@ -50,8 +52,11 @@ const commandHandlers: Record<
   (payload: any, target?: string) => Promise<void>
 > = {
   SET_RGB: handleSetRGB,
-  TOGGLE_ADAPTIVE_LIGHTING_MODE: handleWakeAndSleep, 
+  TOGGLE_ADAPTIVE_LIGHTING_MODE: handleWakeAndSleep,
   OCC_CONFIG_DELAY: handleOffDelay,
+  GET_MAIN_STATE: function (payload: any, target?: string): Promise<void> {
+    throw new Error('Function not implemented.');
+  }
 };
 
 // Connect to the MQTT broker
@@ -59,9 +64,16 @@ client.on('connect', () => {
   console.log('Connected to MQTT broker');
 
   // Subscribe to a status topic
-  client.subscribe(statusTopic, (err) => {
+  client.subscribe(status_topic, (err) => {
     if (!err) {
-      console.log('Subscribed to ' + statusTopic);
+      console.log('Subscribed to ' + status_topic);
+    } else {
+      console.error('Subscription error:', err);
+    }
+  });
+  client.subscribe(state_update_topic, (err) => {
+    if (!err) {
+      console.log('Subscribed to ' + state_update_topic);
     } else {
       console.error('Subscription error:', err);
     }
@@ -117,11 +129,13 @@ app.post('/command', async (req, res) => {
       case Actions.TOGGLE_ADAPTIVE_LIGHTING_MODE:
         if (!validateToggleAdaptiveLightingMode(payload))
           return res.status(400).json({ error: 'Invalid HHMM payload'});
+        break;
       case Actions.OCC_CONFIG_DELAY:
         if (!validateSetOffDelay(payload))
           return res.status(400).json({ error: 'Invalid off delay payload'});
+        break;
     }
-
+    
     await handler(payload, target);
     res.sendStatus(204);
 
@@ -138,4 +152,16 @@ export async function publish(topic: string, msg: ServerEvent) {
 // Start the Express server
 httpServer.listen(port, "127.0.0.1", () => {
   console.log(`Express server listening at http://localhost:${port}`);
+});
+
+io.on('connection', async (socket) => {
+  const brokerMessage: ServerEvent = {
+    origin: 'APP',
+    device: 'APP',
+    action: Actions.GET_MAIN_STATE,
+    payload: {}
+  };
+
+  await sendCommand(brokerMessage, 
+    state_update_topic ?? 'all')
 });
