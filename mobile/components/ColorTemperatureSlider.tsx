@@ -4,17 +4,23 @@ import { sendRGB } from '@/services/homeApi';
 import Slider from '@react-native-community/slider';
 import { colorTempToRGB } from '@shared/domain';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 type ColorTemperatureSliderProps = {
   room_id: number;
+  color_temp: number;
 }
 
-export default function ColorTemperatureSlider( {room_id}: ColorTemperatureSliderProps ) {
-  const [colorTemp, setColorTemp] = useState(4000); // Default to 4000K
+export default function ColorTemperatureSlider( {room_id, color_temp}: ColorTemperatureSliderProps ) {
+  const [localColorTemp, setLocalColorTemp] = useState(color_temp); // Default to 4000K
+  
+  useEffect(() => {
+    setLocalColorTemp(color_temp);
+  }, [color_temp]);
+
   const handleColorTempChange = () => {
-    const color = colorTempToRGB(colorTemp);
+    const color = colorTempToRGB(localColorTemp);
     if (color) {
       const [r, g, b] = color;
       sendRGB(room_id, r, g, b).catch(console.error);
@@ -25,7 +31,7 @@ export default function ColorTemperatureSlider( {room_id}: ColorTemperatureSlide
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.label}>Selected Temp: {colorTemp}K</ThemedText>
+      <ThemedText style={styles.label}>Selected Temp: {localColorTemp}K</ThemedText>
 
       <ThemedView style={styles.sliderContainer}>
       <LinearGradient
@@ -40,8 +46,8 @@ export default function ColorTemperatureSlider( {room_id}: ColorTemperatureSlide
         minimumValue={2700}
         maximumValue={6500}
         step={100}
-        value={colorTemp}
-        onValueChange={setColorTemp}
+        value={localColorTemp}
+        onValueChange={setLocalColorTemp}
         onSlidingComplete={handleColorTempChange}
         minimumTrackTintColor="transparent"
         maximumTrackTintColor="transparent"

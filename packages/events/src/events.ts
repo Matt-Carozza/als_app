@@ -12,6 +12,24 @@ export type StatusEvent = BaseEvent<'STATUS', {
     connected_to_broker: boolean;
 }>;
 
+export type RoomStatePayload = {
+    room_id: number;
+    r: number;
+    g: number;
+    b: number;
+    alm_enabled: boolean;
+    wake_time?: HHMM;  
+    sleep_time?: HHMM;
+};
+
+export type StateEvent = BaseEvent<typeof Actions.GET_MAIN_STATE, {
+    rooms: RoomStatePayload[];
+}>;
+
+export type RoomStateReqEvent = BaseEvent<typeof Actions.GET_MAIN_STATE, {
+
+}>;
+
 export type LightSetEvent = BaseEvent<typeof Actions.SET_RGB, {
     room_id: number,
     r: number,
@@ -39,6 +57,8 @@ export type OccConfigDelay = BaseEvent<typeof Actions.OCC_CONFIG_DELAY, {
 
 export type ServerEvent = 
     | StatusEvent
+    | StateEvent
+    | RoomStateReqEvent
     | LightSetWakeAndSleep
     | LightSetEvent
     | OccConfigDelay;

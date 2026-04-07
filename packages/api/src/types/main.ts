@@ -7,6 +7,7 @@ export type SetWakeAndSleepCommand = ApiCommand<typeof Actions.TOGGLE_ADAPTIVE_L
         enabled: true;
         wake_time: HHMM;
         sleep_time: HHMM;
+        current_time: HHMM;
       }
     | {
         room_id: number,

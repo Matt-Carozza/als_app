@@ -37,6 +37,8 @@ export default function AdaptiveLightingGradient({wakeTime, sleepTime}: Props) {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    marginTop: 20,
+    marginBottom: 20
   },
   topLeftLabel: {
     position: 'absolute',

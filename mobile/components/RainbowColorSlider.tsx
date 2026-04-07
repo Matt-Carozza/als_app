@@ -3,7 +3,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { sendRGB } from '@/services/homeApi';
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 
@@ -32,13 +32,19 @@ function hsvToRgb(h: number): [number, number, number] {
 
 type RainbowColorSliderProps = {
   room_id: number;
+  hue: number;
 }
 
-export default function RainbowColorSlider({ room_id }: RainbowColorSliderProps) {
-  const [hue, setHue] = useState(0); // 0–360 hue
-  const rgb = hsvToRgb(hue);
+export default function RainbowColorSlider({ room_id, hue }: RainbowColorSliderProps) {
+  const [localHue, setLocalHue] = useState(hue); // 0–360 hue
+  const rgb = hsvToRgb(localHue);
+
+  useEffect(() => {
+    setLocalHue(hue);
+  }, [hue]);
+
   const handleRGBSliderChange = () => {
-    const [r, g, b] = hsvToRgb(hue);
+    const [r, g, b] = hsvToRgb(localHue);
     sendRGB(room_id, r, g, b).catch(console.error);
   }
 
@@ -63,8 +69,8 @@ export default function RainbowColorSlider({ room_id }: RainbowColorSliderProps)
           minimumValue={0}
           maximumValue={360}
           step={1}
-          value={hue}
-          onValueChange={setHue}
+          value={localHue}
+          onValueChange={setLocalHue}
           onSlidingComplete={handleRGBSliderChange}
           minimumTrackTintColor="transparent"
           maximumTrackTintColor="transparent"

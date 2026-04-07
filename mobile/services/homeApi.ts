@@ -22,8 +22,9 @@ export async function sendRGB(
 
 export async function enableAdaptiveLightingMode(
   room_id: number,
-  wakeTime: HHMM,
-  sleepTime: HHMM
+  wake_time: HHMM,
+  sleep_time: HHMM,
+  current_time: HHMM
 ): Promise<void> {
   const cmd: SetWakeAndSleepCommand = {
     target: 'all',
@@ -31,8 +32,9 @@ export async function enableAdaptiveLightingMode(
     payload: {  
                 room_id: room_id,
                 enabled: true, 
-                wake_time: wakeTime, 
-                sleep_time: sleepTime
+                wake_time: wake_time, 
+                sleep_time: sleep_time,
+                current_time: current_time,
               },
   };
   
