@@ -55,10 +55,15 @@ export type OccConfigDelay = BaseEvent<typeof Actions.OCC_CONFIG_DELAY, {
     off_delay: number
 }>;
 
+export type FrameUpdateEvent = BaseEvent<typeof Actions.SEND_FRAME, {
+    pixels: number[];
+}>;
+
 export type ServerEvent = 
     | StatusEvent
     | StateEvent
     | RoomStateReqEvent
     | LightSetWakeAndSleep
     | LightSetEvent
+    | FrameUpdateEvent
     | OccConfigDelay;

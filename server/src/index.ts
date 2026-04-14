@@ -20,12 +20,13 @@ const port = 3000;
 // Topics
 const status_topic = '/als/status';
 const state_update_topic = '/als/app/state';
+const web_app_topic = '/als/camera';
 
 // MQTT broker configuration
 var brokerUrl: string;
 if (process.argv[2] === 'local') {
   console.log('Starting in LOCAL mode');
-  brokerUrl = 'mqtt://172.20.10.14:1884'; 
+  brokerUrl = 'mqtt://192.168.8.100:1884'; 
 } else if (process.argv[2] === 'public') {
   console.log('Starting in PUBLIC mode');
   brokerUrl = 'mqtt://test.mosquitto.org:1883'; 
@@ -36,6 +37,7 @@ if (process.argv[2] === 'local') {
   console.log('Unknown mode. Use "local" or "public".');
   process.exit(1);
 }
+brokerUrl = 'mqtt://192.168.8.100:1884'; 
 
 const client: MqttClient = mqtt.connect(brokerUrl);
 
@@ -55,6 +57,9 @@ const commandHandlers: Record<
   TOGGLE_ADAPTIVE_LIGHTING_MODE: handleWakeAndSleep,
   OCC_CONFIG_DELAY: handleOffDelay,
   GET_MAIN_STATE: function (payload: any, target?: string): Promise<void> {
+    throw new Error('Function not implemented.');
+  },
+  SEND_FRAME: function (payload: any, target?: string): Promise<void> {
     throw new Error('Function not implemented.');
   }
 };
@@ -78,6 +83,13 @@ client.on('connect', () => {
       console.error('Subscription error:', err);
     }
   });
+  client.subscribe(web_app_topic, (err) => {
+    if (!err) {
+      console.log('Subscribed to ' + web_app_topic);
+    } else {
+      console.error('Subscription error:', err);
+    }
+  });
 });
 
 client.on('message', (topic: string, payload: Buffer) => {
@@ -97,7 +109,9 @@ client.on('message', (topic: string, payload: Buffer) => {
     payload: message.payload
   }
 
-  console.log(`Received message on ${topic}: ${payload}`);
+  if (topic != web_app_topic) {
+    console.log(`Received message on ${topic}: ${payload}`);
+  }
   
   // Broadcast the message to all connected WebSocket clients
   io.emit('event', event);
@@ -153,8 +167,12 @@ export async function publish(topic: string, msg: ServerEvent) {
 httpServer.listen(port, "127.0.0.1", () => {
   console.log(`Express server listening at http://localhost:${port}`);
 });
+// httpServer.listen(port, "0.0.0.0", () => {
+//   console.log(`Express server listening at http://localhost:${port}`);
+// });
 
 io.on('connection', async (socket) => {
+  console.log("Client Connected");
   const brokerMessage: ServerEvent = {
     origin: 'APP',
     device: 'APP',

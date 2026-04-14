@@ -1,4 +1,11 @@
 const KELVIN_TABLE: Record<number, [number, number, number]> = {
+    2000: [255, 138, 18],
+    2100: [255, 142, 33],
+    2200: [255, 147, 44],
+    2300: [255, 152, 54],
+    2400: [255, 157, 63],
+    2500: [255, 161, 72],
+    2600: [255, 165, 79],
     2700: [255, 169, 87],
     2800: [255, 173, 94],
     2900: [255, 177, 101],
@@ -42,22 +49,30 @@ const KELVIN_TABLE: Record<number, [number, number, number]> = {
     6700: [252, 247, 255],
 }
 
-const RGB_TO_KELVIN: Record<string, number> = Object.entries(KELVIN_TABLE).reduce(
-    (acc, [kelvin, rgb]) => {
-        acc[rgb.join(',')] = Number(kelvin);
+const GAMMA_RGB_TO_KELVIN: Record<string, number> = Object.entries(KELVIN_TABLE).reduce(
+    (acc, [kelvin, [r, g, b]]) => {
+        const key = `${gammaCorrect(r)},${gammaCorrect(g)},${gammaCorrect(b)}`;
+        acc[key] = Number(kelvin);
         return acc;
     },
     {} as Record<string, number>
 );
 
 export function colorTempToRGB(kelvin: number): [number, number, number] | undefined {
-    return KELVIN_TABLE[kelvin];
+    const rgb = KELVIN_TABLE[kelvin];
+    if (!rgb) return undefined;
+    return [gammaCorrect(rgb[0]), gammaCorrect(rgb[1]), gammaCorrect(rgb[2])];
 }
 
 export function rgbToColorTemp(r: number, g: number, b: number): number | undefined {
-    return RGB_TO_KELVIN[`${r},${g},${b}`];
+    return GAMMA_RGB_TO_KELVIN[`${r},${g},${b}`];
 }
 
 export function getConfigMode(r: number, g: number, b: number): 'wl' | 'cl' {
-    return RGB_TO_KELVIN[`${r},${g},${b}`] !== undefined ? 'wl' : 'cl';
+    return rgbToColorTemp(r, g, b) !== undefined ? 'wl' : 'cl';
+}
+
+function gammaCorrect(value: number): number {
+    const clamped_value: number = Math.max(0, Math.min(255, value));
+    return Math.floor(Math.pow(clamped_value / 255, 3) * 255);
 }

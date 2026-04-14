@@ -11,10 +11,16 @@
       "path": "./packages/api"
     },
     {
+      "path": "./packages/services"
+    },
+    {
       "path": "./mobile"
     },
     {
       "path": "./server"
+    },
+    {
+      "path": "./web"
     }
   ],
   "compilerOptions": {},

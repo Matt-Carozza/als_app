@@ -43,7 +43,7 @@ export default function ColorTemperatureSlider( {room_id, color_temp}: ColorTemp
       />
       <Slider
         style={styles.slider}
-        minimumValue={2700}
+        minimumValue={2000}
         maximumValue={6500}
         step={100}
         value={localColorTemp}

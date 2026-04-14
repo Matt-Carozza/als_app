@@ -7,7 +7,8 @@
       "@/*": ["./*"],
       "@shared/api": ["../packages/api/src/index"],
       "@shared/events": ["../packages/events/src/index"],
-      "@shared/domain": ["../packages/domain/src/index"] 
+      "@shared/domain": ["../packages/domain/src/index"],
+      "@shared/services": ["../packages/services/src/index"],
     }
   },
   "include": [
@@ -19,6 +20,7 @@
   "references": [
     { "path" : "../packages/api" },
     { "path" : "../packages/events" },
-    { "path" : "../packages/domain" }
+    { "path" : "../packages/domain" },
+    { "path" : "../packages/services" }
   ]
 }

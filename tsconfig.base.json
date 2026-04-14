@@ -9,7 +9,10 @@
       "@shared/domain/*": ["packages/domain/src/*"],
       
       "@shared/api": ["packages/api/src"],
-      "@shared/api/*": ["packages/api/src/*"]
+      "@shared/api/*": ["packages/api/src/*"],
+
+      "@shared/services": ["packages/services/src"],
+      "@shared/services/*": ["packages/services/src/*"],
     },
 
     "strict": true,

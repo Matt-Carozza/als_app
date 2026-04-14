@@ -9,9 +9,10 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { API_BASE_URL } from '@/constants/api';
 import { disableAdaptiveLightingMode, enableAdaptiveLightingMode, sendOffDelay } from '@/services/homeApi';
-import { connectSocket, subscribeAction } from '@/services/socket';
 import { useGlobalStyles } from '@/styles/globalStyles';
+import { Actions } from '@shared/api';
 import { dateToHHMM, getConfigMode, HHMM, rgbToColorTemp } from '@shared/domain';
+import { connectSocket, subscribeAction } from '@shared/services';
 import { Switch } from 'react-native';
 import { RoomStatePayload } from '../../packages/events/src/events';
 
@@ -152,31 +153,32 @@ export default function App() {
   useEffect(() => {
     connectSocket(API_BASE_URL);
     const unsubscribe = subscribeAction('GET_MAIN_STATE', event => {
-        
-        const { rooms } = event.payload as { rooms: RoomStatePayload[] };
-        setRoomConfigs((prev) => {
-          const updatedConfigs = { ...prev };
-          rooms.forEach((room) => {
-            const mode = room.alm_enabled ? 'wl' : getConfigMode(room.r, room.g, room.b);
-            const colorTempValue = rgbToColorTemp(room.r, room.g, room.b) ?? defaultSettings.colorTemp;
-            const hueValue = rgbToHue(room.r, room.g, room.b)
-            updatedConfigs[room.room_id] = {
-              // Keep existing values if room was already in state
-              ...(prev[room.room_id] || defaultSettings), 
+        if (event.action == Actions.GET_MAIN_STATE) {
+          const { rooms } = event.payload as { rooms: RoomStatePayload[] };
+          setRoomConfigs((prev) => {
+            const updatedConfigs = { ...prev };
+            rooms.forEach((room) => {
+              const mode = room.alm_enabled ? 'wl' : getConfigMode(room.r, room.g, room.b);
+              const colorTempValue = rgbToColorTemp(room.r, room.g, room.b) ?? defaultSettings.colorTemp;
+              const hueValue = rgbToHue(room.r, room.g, room.b)
+              updatedConfigs[room.room_id] = {
+                // Keep existing values if room was already in state
+                ...(prev[room.room_id] || defaultSettings), 
 
-              // Update with fresh data from websocket
-              isAdaptiveLightingEnabled: room.alm_enabled,
-              // Only update times if they are provided in the JSON
-              ...(room.wake_time && { wakeTime: room.wake_time }),
-              ...(room.sleep_time && { sleepTime: room.sleep_time }),
-              
-              selectedLightMode: mode,
-              hue: hueValue,
-              colorTemp: colorTempValue
-            };
+                // Update with fresh data from websocket
+                isAdaptiveLightingEnabled: room.alm_enabled,
+                // Only update times if they are provided in the JSON
+                ...(room.wake_time && { wakeTime: room.wake_time }),
+                ...(room.sleep_time && { sleepTime: room.sleep_time }),
+
+                selectedLightMode: mode,
+                hue: hueValue,
+                colorTemp: colorTempValue
+              };
+            });
+            return updatedConfigs;
           });
-          return updatedConfigs;
-        });
+          } 
       }
     );
     

@@ -4,7 +4,8 @@
   "workspaces": [
     "packages/*",
     "server",
-    "mobile"
+    "mobile",
+    "web"
   ],
   "version": "1.0.0",
   "scripts": {
@@ -24,6 +25,7 @@
     "@shared/events": "*",
     "@shared/domain": "*",
     "@shared/api": "*",
+    "@shared/services": "*",
     "concurrently": "^8.2.0",
     "expo": "~53.0.26",
     "expo-blur": "~14.1.5",
@@ -58,7 +60,8 @@
     "@react-native-community/cli": "latest",
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.0",
-    "@types/react": "~19.0.10",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "ts-node": "^10.9.2",
