@@ -1,10 +1,10 @@
 import { Actions } from '@shared/api';
 import { connectSocket, subscribeAction } from '@shared/services';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 
 const SquareGrid: React.FC = () => {
-  const API_BASE_URL="http://127.0.0.1:3000";
+  const API_BASE_URL="http://192.168.8.100:3000";
   const BINS: number = 3;
   
   const [occupiedStates, setOccupiedStates] = useState<number[]>(Array(64).fill(0));
@@ -35,16 +35,22 @@ const SquareGrid: React.FC = () => {
       opacity: (pixel == 1) ? 0.67 : 1,
     };
   };
+  
+  const last_update = useRef(0);
 
   useEffect(() => {
     connectSocket(API_BASE_URL);
     const unsubscribe = subscribeAction('SEND_FRAME', event => {
       if (event.action == Actions.SEND_FRAME) {
         const pixels = event.payload.pixels;
-        if (Array.isArray(pixels) && pixels.length === 64) {
-          setOccupiedStates(pixels);
-        } else {
-          console.warn("Invalid pixel data", pixels);
+        const now = Date.now();
+
+        if (now - last_update.current > 100) {
+          if (Array.isArray(pixels) && pixels.length === 64) {
+            setOccupiedStates(pixels);
+          } else {
+            console.warn("Invalid pixel data", pixels);
+          }
         }
       }
     });
