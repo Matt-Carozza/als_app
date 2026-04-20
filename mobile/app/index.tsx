@@ -259,6 +259,7 @@ export default function App() {
             selectedValue={offDelay}
             onValueChange={(itemValue, itemIndex) => handleOffDelayDropDownValueChange(itemValue)}
           >
+            <Picker.Item label="6 Seconds" value={0.1} />
             <Picker.Item label="1 Minute" value={1} />
             <Picker.Item label="5 Minutes" value={5} />
             <Picker.Item label="15 Minutes" value={15} />
