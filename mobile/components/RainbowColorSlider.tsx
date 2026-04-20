@@ -37,14 +37,17 @@ type RainbowColorSliderProps = {
 
 export default function RainbowColorSlider({ room_id, hue }: RainbowColorSliderProps) {
   const [localHue, setLocalHue] = useState(hue); // 0–360 hue
+  const [isSliding, setIsSliding] = useState(false);
   const rgb = hsvToRgb(localHue);
 
   useEffect(() => {
-    setLocalHue(hue);
+    if (!isSliding) {
+      setLocalHue(hue);
+    }
   }, [hue]);
 
-  const handleRGBSliderChange = () => {
-    const [r, g, b] = hsvToRgb(localHue);
+  const handleRGBSliderChange = (value: number) => {
+    const [r, g, b] = hsvToRgb(value);
     sendRGB(room_id, r, g, b).catch(console.error);
   }
 
@@ -71,7 +74,11 @@ export default function RainbowColorSlider({ room_id, hue }: RainbowColorSliderP
           step={1}
           value={localHue}
           onValueChange={setLocalHue}
-          onSlidingComplete={handleRGBSliderChange}
+          onSlidingStart={() => setIsSliding(true)}
+          onSlidingComplete={(value) => {
+            setIsSliding(false);
+            handleRGBSliderChange(value);
+          }}
           minimumTrackTintColor="transparent"
           maximumTrackTintColor="transparent"
           thumbTintColor="#fff"

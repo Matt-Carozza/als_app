@@ -14,20 +14,24 @@ type ColorTemperatureSliderProps = {
 
 export default function ColorTemperatureSlider( {room_id, color_temp}: ColorTemperatureSliderProps ) {
   const [localColorTemp, setLocalColorTemp] = useState(color_temp); // Default to 4000K
+  const [isSliding, setIsSliding] = useState(false);
   
   useEffect(() => {
-    setLocalColorTemp(color_temp);
+    if (!isSliding) {
+      setLocalColorTemp(color_temp);
+    }
   }, [color_temp]);
 
-  const handleColorTempChange = () => {
-    const color = colorTempToRGB(localColorTemp);
+  const handleColorTempChange = (value: number) => {
+    const color = colorTempToRGB(value);
+    console.log(value);
     if (color) {
       const [r, g, b] = color;
       sendRGB(room_id, r, g, b).catch(console.error);
     } else {
       console.error("Kelvin value not found in table")
     }
-  }
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -48,7 +52,11 @@ export default function ColorTemperatureSlider( {room_id, color_temp}: ColorTemp
         step={100}
         value={localColorTemp}
         onValueChange={setLocalColorTemp}
-        onSlidingComplete={handleColorTempChange}
+        onSlidingStart={() => setIsSliding(true)}
+        onSlidingComplete={(value) => {
+          setIsSliding(false);
+          handleColorTempChange(value);
+        }}
         minimumTrackTintColor="transparent"
         maximumTrackTintColor="transparent"
         thumbTintColor="#ffffff"
