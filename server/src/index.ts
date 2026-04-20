@@ -92,6 +92,8 @@ client.on('connect', () => {
   });
 });
 
+let latest_frame: any = null;
+
 client.on('message', (topic: string, payload: Buffer) => {
   const raw = payload.toString();
   let message;
@@ -101,7 +103,15 @@ client.on('message', (topic: string, payload: Buffer) => {
     console.warn(`Non-JSON message received on ${topic}: ${raw}`);
     return;
   }
-  
+  if (topic === web_app_topic) {
+    try {
+      latest_frame = message;
+    } catch {
+      console.warn("Invalid Camera frame");
+    }
+    return;
+  }
+
   const event: ServerEvent = {
     origin:  message.origin,
     device:  message.device,
@@ -114,8 +124,23 @@ client.on('message', (topic: string, payload: Buffer) => {
   }
   
   // Broadcast the message to all connected WebSocket clients
+  // console.log("Emitting");
   io.emit('event', event);
 });
+
+setInterval(() => {
+  if (!latest_frame) return;
+  
+  const event: ServerEvent = {
+    origin:  latest_frame.origin,
+    device:  latest_frame.device,
+    action:  latest_frame.action,
+    payload: latest_frame.payload
+  }
+  io.emit('event', event)
+
+  latest_frame = null;
+}, 100); 
 
 app.post('/command', async (req, res) => {
   try {
@@ -150,6 +175,13 @@ app.post('/command', async (req, res) => {
         break;
     }
     
+    // setImmediate(() => {
+    //   handler(payload, target)
+    //   .then(() => console.log("Handler Done"))
+    //   .catch(err => {
+    //     console.error("Handler failed", err);
+    //   });
+    // });
     await handler(payload, target);
     res.sendStatus(204);
 
@@ -164,12 +196,12 @@ export async function publish(topic: string, msg: ServerEvent) {
 }
 
 // Start the Express server
-httpServer.listen(port, "127.0.0.1", () => {
-  console.log(`Express server listening at http://localhost:${port}`);
-});
-// httpServer.listen(port, "0.0.0.0", () => {
+// httpServer.listen(port, "127.0.0.1", () => {
 //   console.log(`Express server listening at http://localhost:${port}`);
 // });
+httpServer.listen(port, "0.0.0.0", () => {
+  console.log(`Express server listening at http://localhost:${port}`);
+});
 
 io.on('connection', async (socket) => {
   console.log("Client Connected");
@@ -181,5 +213,18 @@ io.on('connection', async (socket) => {
   };
 
   await sendCommand(brokerMessage, 
-    state_update_topic ?? 'all')
+    state_update_topic ?? 'all');
 });
+
+// io.on('connection', (socket) => {
+//   console.log("Client Connected");
+//   if (socket.handshake.query.client )
+//   setTimeout(() => {
+//     sendCommand({
+//       origin: 'APP',
+//       device: 'APP',
+//       action: Actions.GET_MAIN_STATE,
+//       payload: {}
+//     }, state_update_topic ?? 'all');
+//   }, 5000);
+// });

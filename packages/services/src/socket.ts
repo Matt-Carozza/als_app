@@ -16,6 +16,8 @@ export function connectSocket(url: string) {
         reconnection: true,
         reconnectionAttempts: Infinity,
         reconnectionDelay: 1000,
+        // reconnectionDelayMax: 5000,
+        // timeout: 20000,
     });
     
     socket.on('connect', () => {
@@ -27,7 +29,10 @@ export function connectSocket(url: string) {
     });
     
     socket.on("disconnect", (reason) => {
-      console.warn("Disconnected:", reason);
+        console.log(reason);
+        if (reason === "io server disconnect") {
+            socket?.connect();
+        }
     });
     
     socket.on('connect_error', (err) => {
