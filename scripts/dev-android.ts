@@ -1,4 +1,4 @@
-import { ChildProcess, execSync, spawn } from "child_process";
+import { ChildProcess, spawn } from "child_process";
 
 const children: ChildProcess[] = [];
 
@@ -19,12 +19,12 @@ function run(cmd: string, args: string[], cwd: string) {
     return p;
 }
 
-try {
-    execSync("adb get-state", {stdio: "ignore"});
-} catch {
-    console.error("adb not available or no device connected");
-    process.exit(1);
-}
+// try {
+//     execSync("adb get-state", {stdio: "ignore"});
+// } catch {
+//     console.error("adb not available or no device connected");
+//     process.exit(1);
+// }
 
 function shutdown() {
   console.log("\nShutting down...");
@@ -36,7 +36,7 @@ function shutdown() {
   }
 
   try {
-    execSync("adb reverse --remove tcp:3000", { stdio: "ignore" });
+    // execSync("adb reverse --remove tcp:3000", { stdio: "ignore" });
   } catch {}
 
   process.exit(0);
@@ -45,8 +45,8 @@ function shutdown() {
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
-console.log("Setting up port forwarding...");
-execSync("adb reverse tcp:3000 tcp:3000", {stdio: "inherit"});
+// console.log("Setting up port forwarding...");
+// execSync("adb reverse tcp:3000 tcp:3000", {stdio: "inherit"});
 
 console.log("Starting server...");
 run("npm", ["run", "dev:public"], "./server");
